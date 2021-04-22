@@ -18,7 +18,7 @@ void PHprobe::begin() { pinMode(_pin, INPUT); }
 /*!
 * @brief Configure the rawVal-to-pH straight line equation
 * @param ph1 Low pH
-* @param volt1 rawVal that correspong to ph1
+* @param volt1 rawVal that correspond to ph1
 * @param ph2 High pH
 * @param volt2 rawVal that correspond to ph2
 */
