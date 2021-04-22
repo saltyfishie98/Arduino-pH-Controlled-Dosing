@@ -17,7 +17,8 @@ RawVal rawHighPH = 433;
 
 // Controller
 PH setPoint = 7;
-MilliSeconds unitDoseLimits = 10000;
+float Kp = 800;
+float Ki = 0.0001f;
 
 // Dose Pump
 Seconds checkInterval_S = 12;
@@ -32,8 +33,8 @@ void setup() {
 }
 
 void loop() {
-  MilliSeconds Output = pumpFunctions::controller(setPoint, probe0.results.Mean,
-                                                  probeCheckInterval);
+  MilliSeconds Output = pumpFunctions::PIcontroller(
+      setPoint, Kp, Ki, probe0.results.Mean, probeCheckInterval);
 
   bool samplingIsDone = probe0.measure(probeCheckInterval);
   if (samplingIsDone) {

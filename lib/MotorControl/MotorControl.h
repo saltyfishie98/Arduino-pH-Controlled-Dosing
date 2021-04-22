@@ -7,6 +7,10 @@
 typedef unsigned long Time;
 typedef bool Use;
 
+enum speed{
+	constant = -1
+};
+
 //#define debug
 
 struct buildMotor{
@@ -14,7 +18,7 @@ struct buildMotor{
 	uint8_t In2 = 0;	// input pin 2
 	int8_t SpeedPin = -1;	// speed ctrl pin
 	bool Direction = 0;	// for software direction switching
-	int Speed = -1;
+	int Speed = constant; // speed constant
 	int ID = 0;
 	Time doseTime = 100;
 	// Use Timestamp = false;
@@ -30,7 +34,6 @@ class MotorControl{
 		void off();
 		void setUnitDose(Time m_seconds); // set how long a unit dose last; in milliseconds
 		void dose(int quantity = 1);
-		void verbose(unsigned int baud);
 		// void showOnOffTimestamp();
 			
 	private:

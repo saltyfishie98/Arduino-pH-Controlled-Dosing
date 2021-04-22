@@ -5,18 +5,29 @@ pumpFunctions::controlTimer t_justDose;
 
 float prevError = 0;
 float integrator = 0;
-const float Kp = 800;
-const float Ki = 0.0001f;
 
+//tooltip only work with this ¯\_(ツ)_/¯
 /*!
- * @brief A PD controller
- * @param setPoint Specify the setpoint (goal) for the controller
+ * @brief A PI controller
  * @param readFromProbe Specify which PHprobe object to read from
+ * @param Kp Proportional gain
+ * @param Ki Integral gain
+ * @param setPoint Specify the setpoint (goal) for the controller
  * @param checkInterval Specify the PHprobe object checkInterval
  * @return MilliSeconds
  */
-MilliSeconds pumpFunctions::controller(PH &readFromProbe, PH &setPoint,
-                                       MilliSeconds &checkInterval) {
+///
+///	@brief A PI controller
+///	@param readFromProbe Specify which PHprobe object to read from
+///	@param Kp Proportional gain
+///	@param Ki Integral gain
+///	@param setPoint Specify the setpoint (goal) for the controller
+///	@param checkInterval Specify the PHprobe object checkInterval
+///	@return MilliSeconds
+///
+MilliSeconds pumpFunctions::PIcontroller(PH readFromProbe, float Kp, float Ki,
+                                         PH setPoint,
+                                         MilliSeconds checkInterval) {
   // Error, Proportional, Integral
   float Err = setPoint - readFromProbe;
   float proportional = Err * Kp;
@@ -30,25 +41,44 @@ MilliSeconds pumpFunctions::controller(PH &readFromProbe, PH &setPoint,
   return ans;
 }
 
+//
 /*!
- * @brief Use a controller to control the unit dose of the specify MotorControl object
+ * @brief Use a controller to control the unit dose of the specify MotorControl
+ * object
  * @param controllerOutput Input a controller output
- * @param dosePumpObjName Specify which MotorControl object the controller control
- * @param checkInterval_S In seconds, specify how long should the time between dose be 
- *                          i.e. the output of the controller is actually input into the dose controls 
- * @param minDoseInterval If controller output time goes below this value it won't dose
+ * @param dosePumpObjName Specify which MotorControl object the controller
+ * control
+ * @param checkInterval_S In seconds, specify how long should the time between
+ * dose be i.e. the output of the controller is actually input into the dose
+ * controls
+ * @param minDoseInterval If controller output time goes below this value it
+ * won't dose
  */
-void pumpFunctions::controlledDose(MilliSeconds &controllerOutput,
+///
+/// @brief Use a controller to control the unit dose of the specify MotorControl
+/// object
+/// @param controllerOutput Input a controller output
+/// @param dosePumpObjName Specify which MotorControl object the controller
+/// control
+/// @param checkInterval_S In seconds, specify how long should the time between
+/// dose be i.e. the output of the controller is actually input into the dose
+/// controls
+/// @param minDoseInterval If controller output time goes below this value it
+/// won't dose
+///
+void pumpFunctions::controlledDose(MilliSeconds controllerOutput,
                                    MotorControl &dosePumpObjName,
                                    Seconds &checkInterval_S,
                                    MilliSeconds minDoseInterval) {
-
   t_controlledDose.setNow();
   if ((t_controlledDose.now - t_controlledDose.lasttime) >=
-      (checkInterval_S * 1000)) { // check have the time passed
+      (checkInterval_S * 1000)) {
+    /* won't run if specified checkInterval_S amount of seconds
+            haven't passed after previous execution */
 
     dosePumpObjName.setUnitDose(abs(controllerOutput));
     if (abs(controllerOutput) >= minDoseInterval) {
+      // won't run if controllerOutput goes below minDoseInterval
       { // Bunch of print statements
         Serial.print("Dose duration: ");
         Serial.print(abs(controllerOutput));

@@ -10,6 +10,7 @@ typedef float PH;
 typedef unsigned int Seconds;
 
 namespace pumpFunctions {
+
 struct controlTimer {
   MilliSeconds lasttime;
   MilliSeconds now;
@@ -18,10 +19,10 @@ struct controlTimer {
   void setNow() { now = millis(); }
 };
 
-MilliSeconds controller(PH &setPoint, PH &readFromProbe,
-                        MilliSeconds &checkInterval);
+MilliSeconds PIcontroller(PH readFromProbe, float Kp, float Ki, PH setPoint,
+                        MilliSeconds checkInterval);
 
-void controlledDose(MilliSeconds &controllerOutput,
+void controlledDose(MilliSeconds controllerOutput,
                     MotorControl &dosePumpObjName, Seconds &checkInterval_S,
                     MilliSeconds minDoseInterval = 100);
 
