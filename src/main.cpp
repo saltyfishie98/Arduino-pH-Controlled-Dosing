@@ -24,7 +24,7 @@ float Ki = 0.0001f;
 Seconds checkInterval_S = 12;
 
 void setup() {
-  Serial.begin(9600);
+	Serial.begin(9600);
   pHGoUp.begin();
   pHGoDown.begin();
   probe0.begin();
@@ -33,7 +33,7 @@ void setup() {
 }
 
 void loop() {
-  MilliSeconds Output = pumpFunctions::PIcontroller(
+	MilliSeconds Output = pumpFunctions::PIcontroller(
       setPoint, Kp, Ki, probe0.results.Mean, probeCheckInterval);
 
   bool samplingIsDone = probe0.measure(probeCheckInterval);
